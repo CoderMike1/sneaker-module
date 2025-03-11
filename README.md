@@ -20,17 +20,37 @@
 ### 🔹 **1. Run on your device**
 ```bash
 git clone https://github.com/CoderMike1/sneaker-module.git
-cd apartment_price_predictor
+cd breuninger-module
 python -m venv venv
 venv\Scripts\activate
 pip install -r requirements.txt
-python manage.py runserver 0.0.0.0:8877
 ```
 
+**Fill data in tasks.csv**
+- Link - url link to the product
+- Size - EU format size like 38 / 40.5 / 47.5 , you can use size range ex. 39-40.5
+- Quantity - number 
+- Proxy - please put in this format host:port:login:password
+- Delay - number
+- Email
+- First Name
+- Last Name
+- Street
+- House number
+- Apartment number  -if exists
+- City
+- Zip code - depends on country use various formats : XX-XXX , XX XXX, XXX XX
+- Country - ISO code : PL, DE, CZ etc.
+- Phone Number - please insert number with prefix
+- Discord Webhook URL - to get notification about purchases you need to insert Webhook URL [How to create it](https://www.youtube.com/watch?v=fKksxz2Gdnc)
 ---
+**After completing data in .csv you need to run one more command**
+```bash
+python script.py
+```
 ## 📷 **Screenshots**
 <p align="center">
-  <img src="screenshots/screenshot1.png"  width="300" style="margin: 10px;">
-  <img src="screenshots/screenshot2.png"  width="300" style="margin: 10px;">
-  <img src="screenshots/screenshot3.png"  width="300" style="margin: 10px;">
+  <img src="screenshots/s1.png"  width="300" style="margin: 10px;">
+  <img src="screenshots/s2.png"  width="300" style="margin: 10px;">
+  <img src="screenshots/s3.png"  width="300" style="margin: 10px;">
 </p>
