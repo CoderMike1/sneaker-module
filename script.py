@@ -1,14 +1,17 @@
 import time
+import os
 import html
 import json
 import random
 from bs4 import BeautifulSoup
 import requests
+from concurrent.futures import ThreadPoolExecutor
 from colorama import Fore,init
 from datetime import datetime
 import pandas as pd
 from tools import log, phone_prefix,USER_AGENT,change_console_title,SITE,bae_sizes,mens_sizes,big_foot_sizes,sizes
 from discord_webhook import DiscordWebhook,DiscordEmbed
+import pyfiglet
 init()
 carted = success =failed =tasks =0
 
@@ -33,10 +36,17 @@ class Program:
         self.apartment_number = tasks_data['Apartment Number']
         self.city = tasks_data['City']
         self.zip_code = tasks_data['Zip Code']
+
         self.country = tasks_data['Country'].upper()
         self.phone_number = tasks_data['Phone Number']
 
         self.webhookURL = tasks_data["Discord Webhook URL"]
+
+        if self.zip_code.find("-") == -1 and self.zip_code.find(" ") ==-1 and self.country.upper() == "CZ":
+            self.zip_code = f"{self.zip_code[:3]} {self.zip_code[3:]}"
+
+        if self.zip_code.find("-") == -1 and self.country.upper() =="PL":
+            self.zip_code = f"{self.zip_code[:2]}-{self.zip_code[2:]}"
 
         self.countryData = {
             "AT": {"domain": "www.breuninger.com/at", "delivery_option": 'STANDARD_POST_AT',
@@ -80,7 +90,8 @@ class Program:
             self.proxies = None
             self.proxy = None
 
-
+    def run(self):
+        return self.add_to_cart()
     def add_to_cart(self):
         global failed
         global carted
@@ -257,7 +268,6 @@ class Program:
                                             return self.cart_step()
 
     def cart_step(self):
-        #time.sleep(1000)
         global failed
         global carted
         global tasks
@@ -266,20 +276,21 @@ class Program:
             log(f"[2/6][TASK {str(self.num)}]Filling address information...",
                 Fore.MAGENTA, SITE)
             cart_data = {
-                "anrede": "Herr",
+                "anrede": "Frau",
                 "titel": "",
                 "vorname": self.first_name,
                 "nachname": self.surname,
-                "strasse": self.street,
-                "hausnummer": self.house_number + "/" + self.apartment_number,
-                "adresszusatz": "",
+                "adresszeile1": self.street,
+                "adresszusatz": self.house_number+"/"+self.apartment_number,
                 "plz": self.zip_code,
                 "ort": self.city,
-                "landiso3": {self.countryData[self.country]['country_code']},
+                "landiso3": self.countryData[self.country]['country_code'],
+                "_droptext": "",
                 "email": self.email,
-                "telefon": self.phone_number.removeprefix(self.countryData[self.country]['prefix']),
+                "telefon": self.phone_number,
                 "geburtsdatum": ""
             }
+
             cart_headers = {
                 "content-type": "application/x-www-form-urlencoded",
                 "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7   ",
@@ -466,14 +477,13 @@ class Program:
     def send_webhook(self):
         if self.webhookURL != "":
             webhook = DiscordWebhook(url=self.webhookURL, rate_limit_retry=True)
-            embed = DiscordEmbed(title=self.product_name, color='f0ba0b',
+            embed = DiscordEmbed(title=self.product_name, color='c852f3',
                                  url=self.link)
             embed.set_thumbnail(
                 url=self.product_image)
             embed.set_author(name="THE PRODUCT WAS PURCHASED!")
             embed.add_embed_field(name="Email:", value=f"||{self.email}||")
-            # embed.add_embed_field(name="Order number:", value="||" + self.order_number + "||")
-            embed.add_embed_field(name="Size:", value=self.size_string)
+            embed.add_embed_field(name="Size:", value=f"{self.size_string} EU")
             embed.add_embed_field(name="Total Price:",
                                   value=f"{self.product_price}")
             embed.add_embed_field(name="Quantity:", value=self.real_qt, inline=False)
@@ -490,5 +500,44 @@ class Program:
 
         time.sleep(3600)
         sys.exit(0)
+
+
+def run_tasks():
+    global tasks
+    print()
+    tasks_amount = len(pd.read_csv(f"tasks.csv", na_filter=False, dtype=str))
+    tasks = tasks_amount
+    change_console_title(SITE, tasks, failed, success, carted)
+    with ThreadPoolExecutor(max_workers=tasks) as executor:
+        for i in range(tasks_amount):
+            executor.submit(Program(i).run)
+
+    print()
+    print()
+    log(f"All tasks completed.",
+        Fore.GREEN, SITE)
+    time.sleep(600)
+
 if __name__ == "__main__":
-    Program(0).add_to_cart()
+    while True:
+        ascii_art = pyfiglet.figlet_format(f"Breuninger Module", font="larry3d", width=210, justify="left").rstrip()
+        print(f"{Fore.BLUE}{ascii_art}{Fore.RESET}")
+        print()
+        print(f"{Fore.YELLOW}Created by CoderMike1")
+        print()
+        print(f"{Fore.GREEN}Choose option:")
+        print(f"{Fore.WHITE}1.Run tasks")
+        print(f"{Fore.RED}2.Quit")
+
+        choice = input("")
+
+        if choice == "1":
+            run_tasks()
+        elif choice == "2":
+            print("Exiting in 3 seconds...")
+            time.sleep(3)
+            sys.exit(0)
+        else:
+            print("unknown command...")
+            time.sleep(1)
+            os.system('cls' if os.name == 'nt' else 'clear')
