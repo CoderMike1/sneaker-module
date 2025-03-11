@@ -50,7 +50,7 @@ python script.py
 ```
 ## 📷 **Screenshots**
 <p align="center">
-  <img src="screenshots/s1.png"  width="300" style="margin: 10px;">
-  <img src="screenshots/s2.png"  width="300" style="margin: 10px;">
-  <img src="screenshots/s3.png"  width="300" style="margin: 10px;">
+  <img src="Screenshots/s1.png"  width="300" style="margin: 10px;">
+  <img src="Screenshots/s2.png"  width="300" style="margin: 10px;">
+  <img src="Screenshots/s3.png"  width="300" style="margin: 10px;">
 </p>
