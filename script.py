@@ -7,34 +7,8 @@ import requests
 from colorama import Fore,init
 from datetime import datetime
 import pandas as pd
-from pyexpat import native_encoding
-
+from tools import log, phone_prefix,USER_AGENT
 init()
-nowz = datetime.now()
-czas = nowz.strftime("%m-%d-%Y %H.%M")
-USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
-SITE = "Breuninger"
-phone_prefix = {
-    "PL":"+48",
-    "CZ":"+420",
-    "SK":"+421",
-    "ES":"+34",
-    "FR":"+33",
-    "IT":"+39",
-    "NL":"+31",
-    "DE":"+49",
-    "CH":"+41",
-    "AT":"+43",
-    "BE":"+32"
-}
-def log(text, color,site):
-    timestamp = datetime.today()
-    message = f"{color}[{str(timestamp.time())}][{site}]{text}"
-    message_log = f"[{str(timestamp.time())}][{site}]{text}"
-    if site != None:
-        with open(f"Logs/{czas}.txt", 'a', encoding='utf-8') as file:
-            file.write(message_log + '\n')
-    print(message)
 
 class Program:
     def __init__(self,num):
@@ -86,7 +60,21 @@ class Program:
             "upgrade-insecure-requests": "1",
             "user-agent": USER_AGENT
         }
-        self.proxies=None
+        if self.proxy_file_name != None:
+            self.proxy = self.proxy_file_name
+            ok = self.proxy.split(":")
+            pierwszy = ok[0]
+            drugi = ok[1]
+            trzeci = ok[2]
+            czwarty = ok[3]
+
+            self.proxies = {
+                "http": "http://" + trzeci + ":" + czwarty + "@" + pierwszy + ":" + drugi,
+                "https": "http://" + trzeci + ":" + czwarty + "@" + pierwszy + ":" + drugi,
+            }
+        else:
+            self.proxies = None
+            self.proxy = None
 
 
     def add_to_cart(self):
