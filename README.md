@@ -12,6 +12,7 @@
 - Available purchases on 9 regions included (**AT, BE, CH, CZ, DE, ES, IT, NL, PL**)
 - Comfortable way to pay (*paypal link*)
 - Possibility to run many tasks in the same time
+- Logs of the checkout process are saved in .txt file
 ---
 
 ## 📦 **Setup and run**
