@@ -20,7 +20,7 @@
 ### 🔹 **1. Run on your device**
 ```bash
 git clone https://github.com/CoderMike1/sneaker-module.git
-cd breuninger-module
+cd sneaker-module
 python -m venv venv
 venv\Scripts\activate
 pip install -r requirements.txt
