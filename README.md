@@ -1,4 +1,4 @@
-# 🏡 Bot module on sneaker store
+# 🏡 A bot supporting shopping in a clothing/sneaker store
 
 ![Python](https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge&logo=python)
 
