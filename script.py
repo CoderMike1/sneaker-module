@@ -520,6 +520,7 @@ def run_tasks():
 
 if __name__ == "__main__":
     while True:
+        change_console_title(SITE, tasks, failed, success, carted)
         ascii_art = pyfiglet.figlet_format(f"Breuninger Module", font="larry3d", width=210, justify="left").rstrip()
         print(f"{Fore.BLUE}{ascii_art}{Fore.RESET}")
         print()
@@ -527,7 +528,7 @@ if __name__ == "__main__":
         print()
         print(f"{Fore.GREEN}Choose option:")
         print(f"{Fore.WHITE}1.Run tasks")
-        print(f"{Fore.RED}2.Quit")
+        print(f"{Fore.RED}2.Quit{Fore.RESET}")
 
         choice = input("")
 
